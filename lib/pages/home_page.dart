@@ -22,7 +22,14 @@ class _HomePageState extends State<HomePage> {
                     colors: [AIColors.primaryColor1, AIColors.primaryColor2],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight))
-                .make()
+                .make(),
+            AppBar(
+              title: "AI Radio".text.xl4.bold.white.make().shimmer(
+                  primaryColor: Vx.purple300, secondaryColor: Colors.white),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              centerTitle: true,
+            ).h(80).p16()
           ],
         ));
   }
