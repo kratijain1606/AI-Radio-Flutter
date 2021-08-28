@@ -39,6 +39,8 @@ class _HomePageState extends State<HomePage> {
   fetchRadios() async {
     final radioJson = await rootBundle.loadString("assets/radio.json");
     radios = MyRadioList.fromJson(radioJson).radios;
+    _selectedRadio = radios![0];
+    _selectedColor = Color(int.parse(_selectedRadio!.color));
     print(radios);
 
     setState(() {});
@@ -48,6 +50,57 @@ class _HomePageState extends State<HomePage> {
     AlanVoice.addButton(
         "20e77bde7e81bc7a5c22bd68733de2032e956eca572e1d8b807a3e2338fdd0dc/stage",
         buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT);
+    AlanVoice.callbacks.add((command) => _handleCommand(command.data));
+  }
+
+  _handleCommand(Map<String, dynamic> response) {
+    switch (response["command"]) {
+      case "play":
+        _playMusic(_selectedRadio!.url);
+        break;
+      case "play_channel":
+        final id = response["id"];
+        // _audioPlayer.pause();
+        MyRadio newRadio = radios!.firstWhere((element) => element.id == id);
+        radios!.remove(newRadio);
+        radios!.insert(0, newRadio);
+        _playMusic(newRadio.url);
+        break;
+      case "stop":
+        _audioPlayer.stop();
+        break;
+      case "next":
+        final index = _selectedRadio!.id;
+        MyRadio newRadio;
+        if (index + 1 > radios!.length) {
+          newRadio = radios!.firstWhere((element) => element.id == 1);
+          radios!.remove(newRadio);
+          radios!.insert(0, newRadio);
+        } else {
+          newRadio = radios!.firstWhere((element) => element.id == index + 1);
+          radios!.remove(newRadio);
+          radios!.insert(0, newRadio);
+        }
+        _playMusic(newRadio.url);
+        break;
+      case "prev":
+        final index = _selectedRadio!.id;
+        MyRadio newRadio;
+        if (index - 1 <= 0) {
+          newRadio = radios!.firstWhere((element) => element.id == 1);
+          radios!.remove(newRadio);
+          radios!.insert(0, newRadio);
+        } else {
+          newRadio = radios!.firstWhere((element) => element.id == index - 1);
+          radios!.remove(newRadio);
+          radios!.insert(0, newRadio);
+        }
+        _playMusic(newRadio.url);
+        break;
+      default:
+        print("Command was ${response["command"]}");
+        break;
+    }
   }
 
   _playMusic(String url) {
@@ -83,6 +136,7 @@ class _HomePageState extends State<HomePage> {
                     aspectRatio: 1.0,
                     enlargeCenterPage: true,
                     onPageChanged: (index) {
+                      _selectedRadio = radios![index];
                       final String colorHex = radios![index].color;
                       _selectedColor = Color(int.parse(colorHex));
                       print("object:" + colorHex);
