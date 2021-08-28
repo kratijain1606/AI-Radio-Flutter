@@ -158,13 +158,34 @@ class _HomePageState extends State<HomePage> {
                   _selectedColor ?? AIColors.primaryColor1
                 ], begin: Alignment.topLeft, end: Alignment.bottomRight))
                 .make(),
-            AppBar(
-              title: "AI Radio".text.xl4.bold.white.make().shimmer(
-                  primaryColor: Vx.purple300, secondaryColor: Colors.white),
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              centerTitle: true,
-            ).h(80).p16(),
+            [
+              AppBar(
+                title: "AI Radio".text.xl4.bold.white.make().shimmer(
+                    primaryColor: Vx.purple300, secondaryColor: Colors.white),
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                centerTitle: true,
+              ).h(80).p16(),
+              20.heightBox,
+              "Start with - Hey Alan 👇".text.italic.semiBold.white.make(),
+              10.heightBox,
+              VxSwiper.builder(
+                itemCount: sugg.length,
+                height: 50.0,
+                viewportFraction: 0.35,
+                autoPlay: true,
+                autoPlayAnimationDuration: 3.seconds,
+                autoPlayCurve: Curves.linear,
+                enableInfiniteScroll: true,
+                itemBuilder: (context, index) {
+                  final s = sugg[index];
+                  return Chip(
+                    label: s.text.make(),
+                    backgroundColor: Vx.randomColor,
+                  );
+                },
+              )
+            ].vStack(),
             radios != null
                 ? VxSwiper.builder(
                     itemCount: radios!.length,
