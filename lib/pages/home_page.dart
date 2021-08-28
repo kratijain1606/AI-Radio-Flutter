@@ -20,6 +20,17 @@ class _HomePageState extends State<HomePage> {
   MyRadio? _selectedRadio;
   Color? _selectedColor;
   bool _isPlaying = false;
+  final sugg = [
+    "Play",
+    "Stop",
+    "Play rock music",
+    "Play 107 FM",
+    "Play next",
+    "Play 104 FM",
+    "Pause",
+    "Play previous",
+    "Play pop music"
+  ];
   final ap.AudioPlayer _audioPlayer = ap.AudioPlayer();
   @override
   void initState() {
@@ -113,7 +124,31 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: Drawer(),
+        drawer: Drawer(
+          child: Container(
+            color: _selectedColor ?? AIColors.primaryColor2,
+            child: radios != null
+                ? [
+                    100.heightBox,
+                    "All Channels".text.xl.white.semiBold.make().px16(),
+                    20.heightBox,
+                    ListView(
+                      padding: Vx.m0,
+                      shrinkWrap: true,
+                      children: radios!
+                          .map((e) => ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(e.icon),
+                                ),
+                                title: "${e.name} FM".text.white.make(),
+                                subtitle: e.tagline.text.white.make(),
+                              ))
+                          .toList(),
+                    ).expand()
+                  ].vStack(crossAlignment: CrossAxisAlignment.start)
+                : const Offstage(),
+          ),
+        ),
         body: Stack(
           children: [
             VxAnimatedBox()
